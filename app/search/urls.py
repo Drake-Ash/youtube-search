@@ -6,7 +6,6 @@ from .views import VideoSearchView
 video_search = routers.DefaultRouter()
 video_search.register("video", VideoSearchView, base_name="video-search")
 
-
 urlpatterns = [
     url(r'^v1/', include(video_search.urls)),
 ]

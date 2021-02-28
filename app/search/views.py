@@ -1,7 +1,7 @@
 from drf_haystack.serializers import HaystackSerializer
 from drf_haystack.viewsets import HaystackViewSet
 
-from .models import Video
+from content.models import Video
 from .search_indexes import VideoIndex
 
 

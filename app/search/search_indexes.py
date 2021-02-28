@@ -1,6 +1,6 @@
 from django.utils import timezone
 from haystack import indexes
-from app.content.models import Video
+from content.models import Video
 
 
 class VideoIndex(indexes.SearchIndex, indexes.Indexable):
