@@ -17,7 +17,11 @@ django.setup()
 from content.services.youtube_service import YoutubeService
 from django.utils import timezone
 from datetime import timedelta
+import time
 
-timediff = timezone.now() - timedelta(hours=1)
-videos_json = YoutubeService.get_videos_from_youtube(timediff)
-YoutubeService.create_or_update_videos(videos_json)
+
+while True:
+    timediff = timezone.now() - timedelta(seconds=60)
+    videos_json = YoutubeService.get_videos_from_youtube(timediff)
+    YoutubeService.create_or_update_videos(videos_json)
+    time.sleep(15)
