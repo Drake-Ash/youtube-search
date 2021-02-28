@@ -6,8 +6,7 @@ class Video(models.Model):
     title = models.TextField(db_index=True)
     description = models.TextField(db_index=True)
     thumbnail_urls = models.ManyToManyField('VideoThumbnail', blank=True, null=True)
-    created_on = models.DateTimeField(db_index=True, auto_now_add=True)
-    modified_at = models.DateTimeField(db_index=True, auto_now=True)
+    published_after = models.DateTimeField(db_index=True, default=None)
 
 
 class VideoThumbnail(models.Model):

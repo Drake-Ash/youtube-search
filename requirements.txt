@@ -3,3 +3,4 @@ djangorestframework==3.9.4
 drf-haystack==1.8.9
 psycopg2==2.8.0
 elasticsearch>=2.0.0,<3.0.0
+requests==2.25.1
