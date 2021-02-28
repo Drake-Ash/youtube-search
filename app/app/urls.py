@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.urls import include
 from django.conf.urls import url
-from app import api_urls
+from rest_framework import routers
+from search.views import VideoSearchView
+
+video_search = routers.DefaultRouter()
+video_search.register("video/search", VideoSearchView, base_name="video-search")
 
 urlpatterns = [
-    url(r'^api/', include(api_urls))
+    url(r'^api/', include(video_search.urls))
 ]
