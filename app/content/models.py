@@ -11,3 +11,9 @@ class Video(models.Model):
 
 class VideoThumbnail(models.Model):
     url = models.URLField(db_index=True)
+
+
+class YoutubeAPIKey(models.Model):
+    api_key = models.TextField(db_index=True)
+    status = models.CharField(max_length=50, db_index=True, default='active')
+    modified_at = models.DateTimeField(db_index=True, auto_now=True)

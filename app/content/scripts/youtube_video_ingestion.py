@@ -6,6 +6,8 @@ ROOT_FOLDER = os.path.realpath(os.path.dirname(__file__))
 ROOT_FOLDER = ROOT_FOLDER[:ROOT_FOLDER.rindex('/scripts')]
 ROOT_FOLDER = ROOT_FOLDER[:ROOT_FOLDER.rindex('/')]
 
+print(ROOT_FOLDER)
+
 os.environ['DJANGO_SETTINGS_MODULE'] = 'app.settings'
 
 if ROOT_FOLDER not in sys.path:
