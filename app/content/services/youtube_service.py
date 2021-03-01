@@ -50,12 +50,12 @@ class YoutubeService(object):
     @classmethod
     def set_quota_reusable_api_keys(cls):
         yesterday = timezone.now() - timedelta(days=1)
-        quota_renewed_api_keys = list(
-            YoutubeAPIKey.objects.filter(
-                status='expired',
-                modified_at__lt=yesterday
-            ).order_by('modified_at').values_list('api_key', flat=True)
-        )
+        quota_renewed_api_keys = YoutubeAPIKey.objects.filter(
+            status='expired',
+            modified_at__lt=yesterday
+        ).order_by('modified_at')
+        quota_renewed_api_keys.update(status='active')
+        quota_renewed_api_keys = list(quota_renewed_api_keys.values_list('api_key', flat=True))
 
         if quota_renewed_api_keys:
             cls.api_keys = quota_renewed_api_keys
