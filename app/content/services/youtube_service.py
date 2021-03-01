@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 import requests
 from content.models import *
 from django.utils import timezone
@@ -7,7 +9,7 @@ from datetime import timedelta
 class YoutubeService(object):
     q = 'dogs'
     api_keys = []
-    url = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&order=date&publishedAfter={publishedAfter}&key={api_key}&q={q}"
+    url = 'https://youtube.googleapis.com/youtube/v3/search?'
 
     @classmethod
     def create_or_update_videos(cls, videos_json):
@@ -39,7 +41,7 @@ class YoutubeService(object):
 
     @classmethod
     def set_active_api_keys(cls):
-        active_api_keys = list(YoutubeAPIKey.objects.filter(status='active').values_list('api_key'))
+        active_api_keys = list(YoutubeAPIKey.objects.filter(status='active').values_list('api_key', flat=True))
         if active_api_keys:
             cls.api_keys = active_api_keys
             return
@@ -51,7 +53,7 @@ class YoutubeService(object):
             YoutubeAPIKey.objects.filter(
                 status='expired',
                 modified_at__lt=yesterday
-            ).order_by('modified_at').values_list('api_key')
+            ).order_by('modified_at').values_list('api_key', flat=True)
         )
 
         if quota_renewed_api_keys:
@@ -72,6 +74,10 @@ class YoutubeService(object):
 
         if len(cls.api_keys) == 0:
             cls.set_api_keys()
+            if len(cls.api_keys) > 0:
+                return cls.api_keys[0]
+            else:
+                raise Exception('All keys expired, please add new key')
 
         api_key = cls.api_keys[0]
         cls.set_api_key_status('expired', api_key)
@@ -110,25 +116,27 @@ class YoutubeService(object):
                 continue
 
             result = response.json()
-            print(response.text)
             videos_json = result.get('items', [])
 
         return videos_json
 
     @classmethod
     def get_videos_from_youtube_api(cls, api_key, iso_time):
-        payload = {}
         headers = {
             'Accept': 'application/json'
         }
-        response = requests.request(
-            "GET",
-            cls.url.format(
-                api_key=api_key,
-                publishedAfter=iso_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                q=cls.q
-            ),
-            headers=headers,
-            data=payload
+        params = {
+            'part': 'snippet',
+            'order': 'date',
+            'q': 'dogs',
+            'type': 'video',
+            'key': api_key,
+            'publishedAfter': iso_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'maxResults': 50
+        }
+        url = cls.url + urlencode(params, doseq=True)
+        response = requests.get(
+            url,
+            headers=headers
         )
         return response
