@@ -17,16 +17,47 @@ services:
       - DB_NAME=app
       - DB_USER=postgres
       - DB_PASSWORD=password
+      - ELASTICSEARCH_DSL_HOSTS=elasticsearch:9200
     depends_on:
       - db
-
-  async:
+      - elasticsearch
+  async_ingestion:
     build:
       context: .
     volumes:
       - ./app:/app
     command: >
-      sh -c "python3 ./content/scripts/youtube_video_ingestion.py"
+      sh -c "python3 manage.py wait_for_db &&
+             python3 manage.py migrate &&
+             python3 ./content/scripts/youtube_video_ingestion.py"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - ELASTICSEARCH_DSL_HOSTS=elasticsearch:9200
+    depends_on:
+      - db
+      - elasticsearch
+
+  async_indexing:
+    build:
+      context: .
+    volumes:
+      - ./app:/app
+    command: >
+      sh -c "python3 manage.py wait_for_db &&
+             python3 manage.py migrate &&
+             ./manage.py rebuild_index --noinput"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - ELASTICSEARCH_DSL_HOSTS=elasticsearch:9200
+    depends_on:
+      - db
+      - elasticsearch
 
   db:
     image: postgres:10-alpine
