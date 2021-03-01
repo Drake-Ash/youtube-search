@@ -129,7 +129,7 @@ class YoutubeService(object):
         params = {
             'part': 'snippet',
             'order': 'date',
-            'q': 'dogs',
+            'q': cls.q,
             'type': 'video',
             'key': api_key,
             'publishedAfter': iso_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
