@@ -36,7 +36,7 @@ use GET to get list of video thumbnails use POST to insert new video thumbnail
 ## Features
 
 1. Ingestion script reuses youtube api_keys based on response - if api_key is expired, it will be reused again after 24
-   hours based on logic
+   hours based on the fact quota is reset every 24 hours
 2. Integration with haystack allows django ORM like query style
 3. Scripts run in a separate docker service - allows separation of processes to scale better
 4. Optimised search to include partial match for the search query
