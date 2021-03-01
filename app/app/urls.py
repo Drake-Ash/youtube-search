@@ -17,10 +17,14 @@ from django.urls import include
 from django.conf.urls import url
 from rest_framework import routers
 from search.views import VideoSearchView
+from content import views as content_views
 
-video_search = routers.DefaultRouter()
-video_search.register("video/search", VideoSearchView, base_name="video-search")
+routers = routers.DefaultRouter()
+routers.register("youtube-token", content_views.YoutubeAPIKeyViewSet, base_name='youtube-token')
+routers.register("video-details", content_views.VideoViewSet, base_name='video')
+routers.register("video-thumbnail", content_views.VideoThumbnailViewSet, base_name='video-thumbnail')
+routers.register("video/search", VideoSearchView, base_name="video-search")
 
 urlpatterns = [
-    url(r'^api/', include(video_search.urls))
+    url(r'^api/', include(routers.urls))
 ]

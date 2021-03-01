@@ -1,5 +1,4 @@
 import os
-import signal
 import sys
 
 ROOT_FOLDER = os.path.realpath(os.path.dirname(__file__))
@@ -19,9 +18,12 @@ from django.utils import timezone
 from datetime import timedelta
 import time
 
-
 while True:
-    timediff = timezone.now() - timedelta(seconds=60)
-    videos_json = YoutubeService.get_videos_from_youtube(timediff)
-    YoutubeService.create_or_update_videos(videos_json)
-    time.sleep(15)
+    try:
+        timediff = timezone.now() - timedelta(seconds=60)
+        videos_json = YoutubeService.get_videos_from_youtube(timediff)
+        YoutubeService.create_or_update_videos(videos_json)
+        time.sleep(15)
+    except Exception as ex:
+        print("ignoring exception and sleeping for 60 seconds:" + str(ex))
+        time.sleep(60)

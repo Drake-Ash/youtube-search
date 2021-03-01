@@ -1,9 +1,9 @@
+from datetime import timedelta
 from urllib.parse import urlencode
 
 import requests
 from content.models import *
 from django.utils import timezone
-from datetime import timedelta
 
 
 class YoutubeService(object):
@@ -21,6 +21,7 @@ class YoutubeService(object):
                 video_thumbnails.append(VideoThumbnail.objects.create(url=thumbnail))
             video.thumbnail_urls.set(video_thumbnails)
             video.save()
+            print('ingested ' + video.youtube_id)
 
     @classmethod
     def get_video_dict(cls, video_json):
